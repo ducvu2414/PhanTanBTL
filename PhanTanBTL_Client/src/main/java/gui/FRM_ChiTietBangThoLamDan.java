@@ -352,7 +352,7 @@ public class FRM_ChiTietBangThoLamDan extends JFrame {
 				File file = new File(filePath);
 
 				if (isFileOpen(file)) {
-					JOptionPane.showMessageDialog(null, "File is already open. Please close it and try again.");
+					JOptionPane.showMessageDialog(null, "File đang mở vui lòng đóng và thử lại");
 				} else {
 
 					Workbook workbook = new HSSFWorkbook();
@@ -418,10 +418,6 @@ public class FRM_ChiTietBangThoLamDan extends JFrame {
 					}
 
 					int row = table.getRowCount();
-					DecimalFormat decimalFormat = new DecimalFormat("#,##0.000");
-					double luong = dao_LuongThoLamDan.layTongThuNhapTungThang(
-							bangLuongThoLamDan.getThoLamDan().getMaCongNhanVien(), bangLuongThoLamDan.getThang(),
-							bangLuongThoLamDan.getNam());
 
 					int salaryColumnIndex = 2;
 					int totalRowNum = row + 6;
@@ -434,86 +430,102 @@ public class FRM_ChiTietBangThoLamDan extends JFrame {
 					totalValueCell.setCellFormula("SUM(" + cellRange + ")");
 
 					Row Luong_Data_Row = sheet.createRow(row + 7);
-					Object[] luongData = { "Lương được nhận", "", "", decimalFormat.format(luong) + " VND" };
+					CellStyle cellStyle = workbook.createCellStyle();
+					cellStyle.setDataFormat(createHelper.createDataFormat().getFormat("#,##0.00"));
+					double luong = dao_LuongThoLamDan.layTongThuNhapTungThang(
+							bangLuongThoLamDan.getThoLamDan().getMaCongNhanVien(), bangLuongThoLamDan.getThang(),
+							bangLuongThoLamDan.getNam());
+					Object[] luongData = { "Lương được nhận", "", "", luong };
 					for (int col = 0; col < luongData.length; col++) {
 						Object cellValue = luongData[col];
 						if (cellValue != null) {
+							Cell cell = Luong_Data_Row.createCell(col);
 							if (cellValue instanceof String) {
-								Luong_Data_Row.createCell(col).setCellValue((String) cellValue);
+								cell.setCellValue((String) cellValue);
 							} else if (cellValue instanceof Number) {
-								Luong_Data_Row.createCell(col).setCellValue(((Number) cellValue).doubleValue());
+								cell.setCellValue(((Number) cellValue).doubleValue());
+								if (col == 3) {
+									cell.setCellStyle(cellStyle);
+								}
 							} else {
-								Luong_Data_Row.createCell(col).setCellValue(cellValue.toString());
+								cell.setCellValue(cellValue.toString());
 							}
 						}
 					}
 
 					Row PCTN_Data_Row = sheet.createRow(row + 8);
-					Object[] PCTNData = { "Phụ cấp thâm niên", "", "",
-							decimalFormat.format(bangLuongThoLamDan.getThoLamDan()
-									.tinhPhuCapThamNienThoLamDan(bangLuongThoLamDan.getThoLamDan().tinhHeSoLuong()))
-									+ " VND" };
+					Object[] PCTNData = { "Phụ cấp thâm niên", "", "", bangLuongThoLamDan.getThoLamDan()
+							.tinhPhuCapThamNienThoLamDan(bangLuongThoLamDan.getThoLamDan().tinhHeSoLuong()) };
 					for (int col = 0; col < PCTNData.length; col++) {
 						Object cellValue = PCTNData[col];
 						if (cellValue != null) {
+							Cell cell = PCTN_Data_Row.createCell(col);
 							if (cellValue instanceof String) {
-								PCTN_Data_Row.createCell(col).setCellValue((String) cellValue);
+								cell.setCellValue((String) cellValue);
 							} else if (cellValue instanceof Number) {
-								PCTN_Data_Row.createCell(col).setCellValue(((Number) cellValue).doubleValue());
+								cell.setCellValue(((Number) cellValue).doubleValue());
+								if (col == 3) {
+									cell.setCellStyle(cellStyle);
+								}
 							} else {
-								PCTN_Data_Row.createCell(col).setCellValue(cellValue.toString());
+								cell.setCellValue(cellValue.toString());
 							}
 						}
 					}
 
 					Row PCAT_Data_Row = sheet.createRow(row + 9);
-					Object[] PCATData = { "Phụ cấp ăn trưa", "", "", decimalFormat.format(900000) + " VND" };
+					Object[] PCATData = { "Phụ cấp ăn trưa", "", "", 900000 };
 					for (int col = 0; col < PCATData.length; col++) {
 						Object cellValue = PCATData[col];
 						if (cellValue != null) {
+							Cell cell = PCAT_Data_Row.createCell(col);
 							if (cellValue instanceof String) {
-								PCAT_Data_Row.createCell(col).setCellValue((String) cellValue);
+								cell.setCellValue((String) cellValue);
 							} else if (cellValue instanceof Number) {
-								PCAT_Data_Row.createCell(col).setCellValue(((Number) cellValue).doubleValue());
+								cell.setCellValue(((Number) cellValue).doubleValue());
+								if (col == 3) {
+									cell.setCellStyle(cellStyle);
+								}
 							} else {
-								PCAT_Data_Row.createCell(col).setCellValue(cellValue.toString());
+								cell.setCellValue(cellValue.toString());
 							}
 						}
 					}
 
 					Row TienDongBaoHiem_Data_Row = sheet.createRow(row + 10);
 					Object[] TienDongBaoHiem_Data = { "Tiền đóng bảo hiểm", "", "",
-							decimalFormat.format((3000000 * 0.08 + 3000000 * 0.015 + 3000000 * 0.01)) + " VND" };
+							3000000 * 0.08 + 3000000 * 0.015 + 3000000 * 0.01 };
 					for (int col = 0; col < TienDongBaoHiem_Data.length; col++) {
 						Object cellValue = TienDongBaoHiem_Data[col];
 						if (cellValue != null) {
+							Cell cell = TienDongBaoHiem_Data_Row.createCell(col);
 							if (cellValue instanceof String) {
-								TienDongBaoHiem_Data_Row.createCell(col).setCellValue((String) cellValue);
+								cell.setCellValue((String) cellValue);
 							} else if (cellValue instanceof Number) {
-								TienDongBaoHiem_Data_Row.createCell(col)
-										.setCellValue(((Number) cellValue).doubleValue());
+								cell.setCellValue(((Number) cellValue).doubleValue());
+								if (col == 3) {
+									cell.setCellStyle(cellStyle);
+								}
 							} else {
-								TienDongBaoHiem_Data_Row.createCell(col).setCellValue(cellValue.toString());
+								cell.setCellValue(cellValue.toString());
 							}
 						}
 					}
 
-					double luongThucLinh = bangLuongThoLamDan.tinhLuongThucLinh(luong);
+					int finalTotalRowNum = table.getRowCount() + 11;
+					Row finalTotalRow = sheet.createRow(finalTotalRowNum);
+					Cell finalTotalLabelCell = finalTotalRow.createCell(0);
+					finalTotalLabelCell.setCellValue("Tổng cộng sau bảo hiểm:");
 
-					Row tongLuongDataRow = sheet.createRow(row + 11);
-					Object[] luongTNData = { "Lương Được Nhận", "", "", decimalFormat.format(luongThucLinh) + " VND" };
-					for (int col = 0; col < luongTNData.length; col++) {
-						Object cellValue = luongTNData[col];
-						if (cellValue != null) {
-							if (cellValue instanceof String) {
-								tongLuongDataRow.createCell(col).setCellValue((String) cellValue);
-							} else if (cellValue instanceof Number) {
-								tongLuongDataRow.createCell(col).setCellValue(((Number) cellValue).doubleValue());
-							} else {
-								tongLuongDataRow.createCell(col).setCellValue(cellValue.toString());
-							}
-						}
-					}
+					Cell finalTotalValueCell = finalTotalRow.createCell(3);
+					String luongCellRef = "D" + (finalTotalRowNum - 3);
+					String pctnCellRef = "D" + (finalTotalRowNum - 2);
+					String pcatCellRef = "D" + (finalTotalRowNum - 1);
+					String bhiemCellRef = "D" + (finalTotalRowNum - 0);
+
+					finalTotalValueCell
+							.setCellFormula(luongCellRef + "+" + pctnCellRef + "+" + pcatCellRef + "-" + bhiemCellRef);
+					finalTotalValueCell.setCellStyle(cellStyle);
 
 					for (int i = 0; i < table.getColumnCount(); i++) {
 						sheet.autoSizeColumn(i);
@@ -533,90 +545,5 @@ public class FRM_ChiTietBangThoLamDan extends JFrame {
 			}
 		}
 	}
-
-//	public static void exportExcel(JTable table, BangLuongThoLamDan bangLuongThoLamDan) {
-//		JFileChooser fileChooser = new JFileChooser();
-//		fileChooser.setDialogTitle("Chọn nơi lưu tệp Excel");
-//		FileNameExtensionFilter filter = new FileNameExtensionFilter("Tệp Excel (.xls)", "xls");
-//		fileChooser.setFileFilter(filter);
-//		int userSelection = fileChooser.showSaveDialog(null);
-//
-//		if (userSelection == JFileChooser.APPROVE_OPTION) {
-//			File file = new File(fileChooser.getSelectedFile().getAbsolutePath());
-//			if (!file.getName().toLowerCase().endsWith(".xls")) {
-//				file = new File(file.getPath() + ".xls");
-//			}
-//			if (file.exists()) {
-//				int response = JOptionPane.showConfirmDialog(null, "File already exists. Do you want to overwrite?",
-//						"Confirm Overwrite", JOptionPane.YES_NO_OPTION);
-//				if (response != JOptionPane.YES_OPTION)
-//					return;
-//			}
-//
-//			try (FileOutputStream fileOut = new FileOutputStream(file)) {
-//				Workbook workbook = new HSSFWorkbook();
-//				Sheet sheet = workbook.createSheet("Salary Details");
-//
-//				// Applying styles
-//				org.apache.poi.ss.usermodel.Font headerFont = workbook.createFont();
-//				headerFont.setBoldweight((short) 12);
-//				headerFont.setFontHeightInPoints((short) 14);
-//
-//				CellStyle headerCellStyle = workbook.createCellStyle();
-//				headerCellStyle.setFont(headerFont);
-//
-//				// Creating header row
-//				Row headerRow = sheet.createRow(0);
-//				for (int i = 0; i < table.getColumnCount(); i++) {
-//					Cell cell = headerRow.createCell(i);
-//					cell.setCellValue(table.getColumnName(i));
-//					cell.setCellStyle(headerCellStyle);
-//				}
-//
-//				// Filling data
-//				for (int row = 0; row < table.getRowCount(); row++) {
-//					Row excelRow = sheet.createRow(row + 1);
-//					for (int col = 0; col < table.getColumnCount() + 1; col++) {
-//						Cell cell = excelRow.createCell(col);
-//						if (col < 4) {
-//							Object value = table.getValueAt(row, col);
-//							if (value instanceof String) {
-//								cell.setCellValue((String) value);
-//							} else if (value instanceof Number) {
-//								cell.setCellValue(((Number) value).doubleValue());
-//								cell.setCellType(Cell.CELL_TYPE_NUMERIC);
-//							} else {
-//								cell.setCellValue(value.toString());
-//							}
-//						}
-//
-//					}
-//				}
-//
-//				int salaryColumnIndex = 3;
-//				int totalRowNum = table.getRowCount() + 1;
-//				Row totalRow = sheet.createRow(totalRowNum);
-//				Cell totalLabelCell = totalRow.createCell(2);
-//				totalLabelCell.setCellValue("Total Salary:");
-//				totalLabelCell.setCellStyle(headerCellStyle);
-//
-//				Cell totalValueCell = totalRow.createCell(salaryColumnIndex);
-//				String cellRange = "D2:D" + (totalRowNum);
-//				totalValueCell.setCellFormula("SUM(" + cellRange + ")");
-//				totalValueCell.setCellStyle(headerCellStyle);
-//
-//				// Auto-size columns
-//				for (int i = 0; i < table.getColumnCount(); i++) {
-//					sheet.autoSizeColumn(i);
-//				}
-//
-//				workbook.write(fileOut);
-//				JOptionPane.showMessageDialog(null, "Excel file saved successfully!");
-//			} catch (Exception e) {
-//				e.printStackTrace();
-//				JOptionPane.showMessageDialog(null, "Failed to save the Excel file!");
-//			}
-//		}
-//	}
 
 }
