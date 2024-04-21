@@ -31,6 +31,7 @@ import com.formdev.flatlaf.themes.FlatMacLightLaf;
 
 import entity.TaiKhoan;
 import idao.I_DAO_TaiKhoan;
+import splashscreen.SplashScreen;
 
 public class FRM_Login extends JFrame implements ActionListener {
 
@@ -51,22 +52,50 @@ public class FRM_Login extends JFrame implements ActionListener {
 	 * Launch the application.
 	 */
 	public static void main(String[] args) {
-		EventQueue.invokeLater(new Runnable() {
-			public void run() {
-				try {
-					UIManager.setLookAndFeel(new FlatMacLightLaf());
-				} catch (Exception ex) {
-					System.err.println("Failed to initialize LaF");
-				}
-				try {
-					FRM_Login frame = new FRM_Login();
-					frame.setVisible(true);
-				} catch (Exception e) {
-					e.printStackTrace();
-				}
+		try {
+			UIManager.setLookAndFeel(new FlatMacLightLaf());
+		} catch (Exception ex) {
+			System.err.println("Failed to initialize LaF");
+			ex.printStackTrace();
+			return;
+
+		}
+
+		EventQueue.invokeLater(() -> {
+			try {
+				UIManager.setLookAndFeel(new FlatMacLightLaf());
+			} catch (Exception ex) {
+				System.err.println("Failed to initialize LaF");
+				ex.printStackTrace();
 			}
 		});
 
+		final FRM_Login[] frame = new FRM_Login[1];
+
+		Thread splashThread = new Thread(() -> {
+			SplashScreen splash = new splashscreen.SplashScreen(null, true);
+			splash.setVisible(true);
+			synchronized (splash) {
+				while (splash.isVisible()) {
+					try {
+						splash.wait();
+					} catch (InterruptedException e) {
+						e.printStackTrace();
+					}
+				}
+			}
+
+			EventQueue.invokeLater(() -> {
+				frame[0].setVisible(true);
+			});
+		});
+
+		Thread loginInitThread = new Thread(() -> {
+			frame[0] = new FRM_Login();
+		});
+
+		splashThread.start();
+		loginInitThread.start();
 	}
 
 	/**
@@ -81,8 +110,8 @@ public class FRM_Login extends JFrame implements ActionListener {
 			setIconImage(Toolkit.getDefaultToolkit().getImage(FRM_GiaoDienChinh.class.getResource("/icons/Icon.png")));
 			setLocationRelativeTo(null);
 			contentPane = new JPanel();
-			contentPane.setForeground(new Color(102, 102, 204));
-			contentPane.setBackground(new Color(218, 205, 212));
+			contentPane.setForeground(Color.decode("#011F82"));
+			contentPane.setBackground(Color.decode("#B8E1FF"));
 			contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
 
 			setContentPane(contentPane);
